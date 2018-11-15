@@ -50,6 +50,9 @@ end
 % figure % Uncomment if want new figure for every run else reuse figure  
 showCameras(cameras, 1);
 
+headers = {'undistort_x', 'undistort_y'};
+% headers = {'x', 'y'};
+
 for traj_index=1:size(FileList,1)
 %     Each row represents a trajectory.
 %     col is the coordinates of the ball from a camera
@@ -58,7 +61,7 @@ for traj_index=1:size(FileList,1)
         coords_filename = strcat('Annotation/',...
             strrep(FileList{traj_index, camera_index}, 'mp4', 'csv'));
         opts = setvartype(detectImportOptions(coords_filename),...
-            {'x','y','undistort_x','undistort_y'},'double');
+            headers,'double');
         coords_table = readtable(coords_filename, opts);
         coords_tables{camera_index} = coords_table;
     end
@@ -68,9 +71,9 @@ for traj_index=1:size(FileList,1)
     trajs = Estimate3DCoordinates(cameras{1}, ...
                         cameras{2}, ...
                         cameras{3}, ...
-                        coords_tables{1}{:,{'undistort_x', 'undistort_y'}}, ...
-                        coords_tables{2}{:,{'undistort_x', 'undistort_y'}}, ...
-                        coords_tables{3}{:,{'undistort_x', 'undistort_y'}});
+                        coords_tables{1}{:,headers}, ...
+                        coords_tables{2}{:,headers}, ...
+                        coords_tables{3}{:,headers});
     traj_1 = trajs(:,:,1);
     traj_2 = trajs(:,:,2);
     traj_3 = trajs(:,:,3);
